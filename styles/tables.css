@@ -1,0 +1,59 @@
+/* table.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.cat-row-button{
+    @apply bg-transparent border-0 p-0 m-0 hover:bg-transparent focus:outline-none
+}
+.icon-size-delete {
+    @apply w-[100%] h-[68%] flex-shrink-0;
+  }
+/* Custom styles for table */
+.custom-table {
+  
+  border-collapse: separate;
+  border-spacing: 0; /* Adjust as needed for spacing between cells */
+}
+
+.custom-table th
+{
+    @apply border-collapse border-0 bg-white; /* Remove border from table cells */
+    @apply px-4 py-2;
+    @apply hover:bg-[#F3F5F8] border-blue-400;
+    color: #121217;
+}
+.custom-table tr
+{
+    @apply border-collapse border-0; /* Remove border from table cells */
+    @apply px-4 py-2  bg-white;
+    @apply hover:bg-[#F3F5F8] border-blue-400;
+    color: #121217;
+}
+
+.custom-table td{
+    @apply border-0; /* Remove border from table cells */
+    @apply px-4 py-2;
+    color: #121217;
+}
+/* Example for alternating row colors */
+.custom-table tr:nth-child(odd) {
+      @apply bg-[#E8F3FF];  
+      @apply hover:bg-[#F3F5F8]  border-blue-400;
+  /* background-color: #E8F3FF; */
+}
+   /* Adjust background color as needed */
+
+.custom-input {
+@apply py-1 sm:py-1.5 lg:py-2 px-1.5 sm:px-2 lg:px-2.5 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center flex justify-center items-center;
+  padding: 1% 1.2%; /* Adjust padding as 1% of the width and 1.2% of the height */
+  gap: 0.4%;
+  width: 50%;
+  }
+.custom-inputBox{
+    @apply py-1 sm:py-1.5 lg:py-2 px-1.5 sm:px-2 lg:px-2.5 text-center ;
+    padding: 1% 1.2%; /* Adjust padding as 1% of the width and 1.2% of the height */
+    gap: 0.4%;
+    width: 50%;
+}
+

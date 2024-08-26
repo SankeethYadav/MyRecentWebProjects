@@ -1,0 +1,45 @@
+/* table.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tab-switcher-header {
+  @apply top-0  flex justify-between items-center;
+  color: #121217;
+}
+.tab-switcher {
+  @apply bg-[white] w-[27%]  rounded-lg border border-gray-300;
+}
+.tab-trigger {
+  @apply relative font-medium px-4 py-4 border-r border-gray-300 hover:bg-gray-200;
+}
+.tab-trigger-noborder {
+  @apply relative font-medium px-4 py-4   border-gray-300 hover:bg-gray-200;
+}
+.fotter-button {
+  @apply flex justify-end space-x-4;
+}
+.fotter-button-style {
+  @apply bg-[#205BFB] rounded hover:bg-[#205BFB]   text-white flex items-center space-x-2;
+}
+/* Custom styles for table */
+.budget-icon {
+  @apply w-4 h-4 relative overflow-hidden flex-shrink-0;
+}
+
+.budget-container {
+  @apply gap-2 px-4 py-2 border border-gray-100 rounded-full bg-white hover:bg-gray-200 transition;
+
+}
+.buget-font{
+  font-family: 'Manrope';
+  font-size: 16px;
+}
+.budget-button {
+  @apply whitespace-nowrap relative rounded-full bg-white h-14 overflow-hidden flex-shrink-0 flex flex-row items-center justify-center px-3 py-2 box-border text-left text-base text-[#121217];
+  font-family: 'Manrope';
+}
+.page-name {
+    font-family: 'Manrope', sans-serif;
+    color: #121217;
+}

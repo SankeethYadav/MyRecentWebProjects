@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components{
+  .subHeaderContainer {
+    @apply w-full px-3 py-3 bg-white flex flex-row justify-between items-center;
+  }
+
+  .titleContainer {
+    @apply flex justify-start items-center gap-3;
+  }
+
+  .backButton {
+    @apply w-7 h-7 bg-blue-600 rounded-full flex justify-center items-center cursor-pointer;
+  }
+
+  .arrowIcon {
+    @apply w-4 h-4 stroke-white;
+  }
+
+  .titleText {
+    @apply text-neutral-800 text-xl font-bold ;
+  }
+
+  .buttonsContainer {
+    @apply flex flex-row gap-4;
+  }
+
+  .customButton {
+    @apply rounded-lg whitespace-nowrap flex flex-row bg-blue-600 gap-1;
+  }
+  .clickedButton {
+    @apply bg-white;
+  }
+
+  .icon {
+    @apply w-6 h-6 flex stroke-white mr-2;
+  }
+
+  .iconClicked {
+    @apply w-6 h-6 flex stroke-black mr-2;
+  }
+
+  .buttonText {
+    @apply text-white flex px-3 py-3 ;
+  }
+
+  .buttonTextClicked {
+    @apply text-black flex px-3 py-3;
+  }
+  .footerButton{
+    @apply bg-blue-600 flex items-center space-x-2;
+  }
+
+}

@@ -1,0 +1,17 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.alert-box{
+    @apply w-1/2 h-auto px-2 py-4 bg-amber-50 rounded-lg flex items-start;
+}
+.alert-text{
+    @apply text-yellow-700 text-sm font-medium;
+}
+.add-button{
+    @apply w-[175px] h-10 px-3 py-2 bg-primary-blue rounded-lg flex justify-center items-center gap-1;
+}
+.add-button-text{
+    @apply text-white text-sm font-medium leading-normal;
+}

@@ -1,0 +1,512 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@internal/prisma-second/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("QCC_DATABASE_URL")
+}
+
+model category {
+  id           BigInt        @id @default(autoincrement())
+  createdBy    String?       @db.VarChar(255)
+  createdDate  DateTime?     @db.DateTime(0)
+  modifiedBy   String?       @db.VarChar(255)
+  modifiedDate DateTime?     @db.DateTime(0)
+  name         String        @db.VarChar(255)
+  facility_id  BigInt?
+  active       Int?
+  stock        Boolean       @db.Bit(1)
+  facility     facility?     @relation(fields: [facility_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKk4t0kn6oj4hiaf4ri57nmxlb4")
+  ingredients  ingredients[]
+  invoices     invoices[]
+  product      product[]
+  @@index([facility_id], map: "FKk4t0kn6oj4hiaf4ri57nmxlb4")
+}
+
+model configuration {
+  id               BigInt    @id @default(autoincrement())
+  createdBy        String?   @db.VarChar(255)
+  createdDate      DateTime? @db.DateTime(0)
+  modifiedBy       String?   @db.VarChar(255)
+  modifiedDate     DateTime? @db.DateTime(0)
+  account_sid      String?   @db.VarChar(255)
+  active           Int?
+  auth_token       String?   @db.VarChar(255)
+  from_email       String?   @db.VarChar(255)
+  from_pass        String?   @db.VarChar(255)
+  mile_radius      Float?
+  sms_url          String?   @db.VarChar(255)
+  api_email_key    String?   @db.VarChar(255)
+  saleTax          String?   @db.VarChar(255)
+  fuel_adjustment  Float?
+  other_charges    Float?
+  surcharge        Float?
+  machine_capacity Float?
+  auto_email       String    @db.VarChar(255)
+}
+
+model credit {
+  id                  BigInt           @id @default(autoincrement())
+  createdBy           String?          @db.VarChar(255)
+  createdDate         DateTime?        @db.DateTime(0)
+  modifiedBy          String?          @db.VarChar(255)
+  modifiedDate        DateTime?        @db.DateTime(0)
+  active              Int?
+  credit_date         DateTime?        @db.DateTime(0)
+  creditNumber        String?          @db.VarChar(255)
+  credit_price        Float?
+  remarks             String?          @db.VarChar(255)
+  total_qnty_credited BigInt?
+  credit_reason_id    BigInt?
+  facility_id         BigInt?
+  order_id            BigInt?
+  store_id            BigInt?
+  credit_reasons      credit_reasons?  @relation(fields: [credit_reason_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK546l4ksp4vmgc9jdmpwl6txmu")
+  store               store?           @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK5o0bjnpkyjrm37m4v922ntsi")
+  orders              orders?          @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK6mb9qf5yd4kekwsufk92ipe62")
+  facility            facility?        @relation(fields: [facility_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK92qbaxvxdc7ow72qmmx38r39h")
+  credit_details      credit_details[]
+
+  @@index([credit_reason_id], map: "FK546l4ksp4vmgc9jdmpwl6txmu")
+  @@index([store_id], map: "FK5o0bjnpkyjrm37m4v922ntsi")
+  @@index([order_id], map: "FK6mb9qf5yd4kekwsufk92ipe62")
+  @@index([facility_id], map: "FK92qbaxvxdc7ow72qmmx38r39h")
+}
+
+model credit_details {
+  id             BigInt    @id @default(autoincrement())
+  createdBy      String?   @db.VarChar(255)
+  createdDate    DateTime? @db.DateTime(0)
+  modifiedBy     String?   @db.VarChar(255)
+  modifiedDate   DateTime? @db.DateTime(0)
+  description    String?   @db.VarChar(255)
+  item           String?   @db.VarChar(255)
+  price          Float?    @db.Float
+  product_number String    @db.VarChar(255)
+  quantity       Int?
+  status         Int?      @default(0)
+  supplier       String?   @db.VarChar(255)
+  credit_id      BigInt?
+  product_id     BigInt?
+  product        product?  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKf564caefl9s7rerjw180y3qre")
+  credit         credit?   @relation(fields: [credit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKil1d78ebx5u2f7617hjyprop7")
+
+  @@index([product_id], map: "FKf564caefl9s7rerjw180y3qre")
+  @@index([credit_id], map: "FKil1d78ebx5u2f7617hjyprop7")
+}
+
+model credit_reasons {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  active       Int?
+  description  String    @db.VarChar(255)
+  credit       credit[]
+}
+
+model facility {
+  id               BigInt             @id @default(autoincrement())
+  createdBy        String?            @db.VarChar(255)
+  createdDate      DateTime?          @db.DateTime(0)
+  modifiedBy       String?            @db.VarChar(255)
+  modifiedDate     DateTime?          @db.DateTime(0)
+  address          String             @db.VarChar(255)
+  details          String?            @db.VarChar(255)
+  latitude         String?            @db.VarChar(255)
+  logo             String?            @db.VarChar(255)
+  longitude        String?            @db.VarChar(255)
+  name             String             @db.VarChar(255)
+  phone            String?            @db.VarChar(255)
+  shipping_cost    Float?
+  tax              Float?
+  email            String?            @db.VarChar(255)
+  store_number     String?            @db.VarChar(255)
+  category         category[]
+  credit           credit[]
+  orders           orders[]
+  store_facilities store_facilities[]
+  users            users[]
+}
+
+model ingredient_constraints {
+  id            BigInt    @id @default(autoincrement())
+  createdBy     String?   @db.VarChar(255)
+  createdDate   DateTime? @db.DateTime(0)
+  modifiedBy    String?   @db.VarChar(255)
+  modifiedDate  DateTime? @db.DateTime(0)
+  ingredient_id BigInt    @unique(map: "UK_c10eo1cgot2gdb5lgab1mfa44")
+  max_amount    Int?
+  min_amount    Int?
+}
+
+model ingredients {
+  id              BigInt    @id @default(autoincrement())
+  createdBy       String?   @db.VarChar(255)
+  createdDate     DateTime? @db.DateTime(0)
+  modifiedBy      String?   @db.VarChar(255)
+  modifiedDate    DateTime? @db.DateTime(0)
+  active          Int?
+  name            String    @db.VarChar(255)
+  price           Float?
+  quantity        Float?
+  product_id      BigInt?
+  quantity_ounces Float?
+  category_id     BigInt?
+  packing         Float?
+  quantity_lb     Float?
+  product         product?  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK5or82m06qq2scglsp6t2lunyn")
+  category        category? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK8847wykb37re79v96wuihav21")
+
+  @@index([product_id], map: "FK5or82m06qq2scglsp6t2lunyn")
+  @@index([category_id], map: "FK8847wykb37re79v96wuihav21")
+}
+
+model inventory {
+  id                   BigInt              @id @default(autoincrement())
+  createdBy            String?             @db.VarChar(255)
+  createdDate          DateTime?           @db.DateTime(0)
+  modifiedBy           String?             @db.VarChar(255)
+  modifiedDate         DateTime?           @db.DateTime(0)
+  active               Int?
+  inventory_date       DateTime?           @db.DateTime(0)
+  inventory_total_cost Float?
+  remarks              String?             @db.VarChar(255)
+  shipping_date        DateTime?           @db.DateTime(0)
+  total_qty            Float?              @db.Float
+  supplier_id          BigInt?
+  supplier             supplier?           @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKe0810rp6mmsbj1f46yhc4h7vb")
+  inventory_details    inventory_details[]
+
+  @@index([supplier_id], map: "FKe0810rp6mmsbj1f46yhc4h7vb")
+}
+
+model inventory_details {
+  id            BigInt     @id @default(autoincrement())
+  createdBy     String?    @db.VarChar(255)
+  createdDate   DateTime?  @db.DateTime(0)
+  modifiedBy    String?    @db.VarChar(255)
+  modifiedDate  DateTime?  @db.DateTime(0)
+  item          String?    @db.VarChar(255)
+  markup        Float?     @db.Float
+  price         Float?     @db.Float
+  quantity      Float?     @db.Float
+  shipping_cost Float?     @db.Float
+  total_cost    Float?     @db.Float
+  inventory_id  BigInt?
+  product_id    BigInt?
+  active        Int?
+  expiry_date   DateTime?  @db.DateTime(0)
+  onHandQty     Float?     @db.Float
+  recievedDate  DateTime?  @db.DateTime(0)
+  location_id   BigInt?
+  product       product?   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKlsxf0kt70es4p5c9ndknr7e1g")
+  inventory     inventory? @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKpyygsywkdu1phrhl97cuccjtn")
+  location      location?  @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKtc1ejaba3lqnecea2pm7gavjc")
+
+  @@index([product_id], map: "FKlsxf0kt70es4p5c9ndknr7e1g")
+  @@index([inventory_id], map: "FKpyygsywkdu1phrhl97cuccjtn")
+  @@index([location_id], map: "FKtc1ejaba3lqnecea2pm7gavjc")
+}
+
+model invoices {
+  id                    BigInt    @id @default(autoincrement())
+  createdBy             String?   @db.VarChar(255)
+  createdDate           DateTime? @db.DateTime(0)
+  modifiedBy            String?   @db.VarChar(255)
+  modifiedDate          DateTime? @db.DateTime(0)
+  fuel_adjustment       Float?
+  grand_total           Float?
+  invoice_date          DateTime? @db.DateTime(0)
+  invoice_no            String?   @db.VarChar(255)
+  other_charges         Float?
+  paid_yn               String?   @db.VarChar(255)
+  status                String?   @db.VarChar(255)
+  surcharge             Float?
+  tax                   Float?
+  total                 Float?
+  category_id           BigInt?
+  order_id              BigInt?
+  supplier_id           BigInt?
+  fuel_adjustment_value Float?
+  other_charges_value   Float?
+  surcharge_value       Float?
+  tax_value             Float?
+  supplier              supplier? @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK47adxyor7fb40pq50oh9cegjk")
+  orders                orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK4ko3y00tkkk2ya3p6wnefjj2f")
+  category              category? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKjfk9fglbwdjbtu5aoeap9i94n")
+
+  @@index([supplier_id], map: "FK47adxyor7fb40pq50oh9cegjk")
+  @@index([order_id], map: "FK4ko3y00tkkk2ya3p6wnefjj2f")
+  @@index([category_id], map: "FKjfk9fglbwdjbtu5aoeap9i94n")
+}
+
+model location {
+  id                BigInt              @id @default(autoincrement())
+  createdBy         String?             @db.VarChar(255)
+  createdDate       DateTime?           @db.DateTime(0)
+  modifiedBy        String?             @db.VarChar(255)
+  modifiedDate      DateTime?           @db.DateTime(0)
+  active            Int?
+  aisle             String?             @db.VarChar(255)
+  name              String?             @db.VarChar(255)
+  shelf             String?             @db.VarChar(255)
+  inventory_details inventory_details[]
+}
+
+model module {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  description  String?   @db.VarChar(255)
+  name         String    @db.VarChar(255)
+}
+
+model order_details {
+  id             BigInt    @id @default(autoincrement())
+  createdBy      String?   @db.VarChar(255)
+  createdDate    DateTime? @db.DateTime(0)
+  modifiedBy     String?   @db.VarChar(255)
+  modifiedDate   DateTime? @db.DateTime(0)
+  quantity       Int?
+  order_id       BigInt?
+  product_id     BigInt?
+  description    String?   @db.VarChar(255)
+  item           String?   @db.VarChar(255)
+  price          String?   @db.VarChar(255)
+  supplier       String?   @db.VarChar(255)
+  status         Int?      @default(0)
+  product_number String    @db.VarChar(255)
+  is_credited    Int?      @default(0)
+  markup_cost    Float?    @db.Float
+  purchase_price Float?    @db.Float
+  shipping_cost  Float?    @db.Float
+  product        product?  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKinivj2k1370kw224lavkm3rqm")
+  orders         orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKjyu2qbqt8gnvno9oe9j2s2ldk")
+
+  @@index([product_id], map: "FKinivj2k1370kw224lavkm3rqm")
+  @@index([order_id], map: "FKjyu2qbqt8gnvno9oe9j2s2ldk")
+}
+
+model order_status {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  description  String?   @db.VarChar(255)
+  name         String?   @db.VarChar(255)
+  active       Int?
+  orders       orders[]
+}
+
+model order_type {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  description  String?   @db.VarChar(255)
+  name         String?   @db.VarChar(255)
+  active       Int?
+  orders       orders[]
+}
+
+model orders {
+  id                 BigInt          @id @default(autoincrement())
+  createdBy          String?         @db.VarChar(255)
+  createdDate        DateTime?       @db.DateTime(0)
+  modifiedBy         String?         @db.VarChar(255)
+  modifiedDate       DateTime?       @db.DateTime(0)
+  facility_id        BigInt?
+  store_id           BigInt?
+  ordr_date          DateTime?       @db.DateTime(0)
+  order_details_blob Bytes?
+  delivery_date      DateTime?       @db.DateTime(0)
+  number             String?         @db.VarChar(255)
+  order_price        Float?
+  order_tax          Float?
+  payment_recieved   Boolean?        @db.Bit(1)
+  remarks            String?         @db.VarChar(255)
+  shipping_date      DateTime?       @db.DateTime(0)
+  shipping_method    String?         @db.VarChar(255)
+  forcastBudget      Float?
+  forcastSales       Float?
+  total_qnty_ordered BigInt?
+  order_status_id    BigInt?
+  order_type_id      BigInt?
+  active             Int?
+  order_memo         String?         @db.VarChar(255)
+  credit             credit[]
+  invoices           invoices[]
+  order_details      order_details[]
+  order_status       order_status?   @relation(fields: [order_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2n7p8t83wo7x0lep1q06a6cvy")
+  store              store?          @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK5n14sr4mswfdtaoiwj7rkt0mw")
+  facility           facility?       @relation(fields: [facility_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK71vlr5gbnt8nfh07jrhbb1nqs")
+  order_type         order_type?     @relation(fields: [order_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKbcl5q413bdmr1g7l29l0vrdfx")
+
+  @@index([order_status_id], map: "FK2n7p8t83wo7x0lep1q06a6cvy")
+  @@index([store_id], map: "FK5n14sr4mswfdtaoiwj7rkt0mw")
+  @@index([order_type_id], map: "FKbcl5q413bdmr1g7l29l0vrdfx")
+  @@index([facility_id], map: "facility_id")
+}
+
+model product {
+  id                BigInt              @id @default(autoincrement())
+  createdBy         String?             @db.VarChar(255)
+  createdDate       DateTime?           @db.DateTime(0)
+  modifiedBy        String?             @db.VarChar(255)
+  modifiedDate      DateTime?           @db.DateTime(0)
+  alt_sku           String?             @db.VarChar(255)
+  brand             String?             @db.VarChar(255)
+  cost              String?             @db.VarChar(255)
+  description       String?             @db.VarChar(255)
+  height            String?             @db.VarChar(255)
+  image             String?             @db.VarChar(255)
+  length            String?             @db.VarChar(255)
+  name              String              @db.VarChar(255)
+  shipping_cost     String?             @db.VarChar(255)
+  sku               String?             @db.VarChar(255)
+  weight            String?             @db.VarChar(255)
+  width             String?             @db.VarChar(255)
+  category_id       BigInt?
+  size              String?             @db.VarChar(255)
+  pack              Int?
+  supplier_id       BigInt?
+  active            Int?
+  product_number    String              @db.VarChar(255)
+  markup            String?             @default("0") @db.VarChar(255)
+  totalCost         String?             @db.VarChar(255)
+  onHandQty         Float?              @db.Float
+  ounces_per_tray   Float?              @db.Float
+  patties_per_tray  Float?              @db.Float
+  credit_details    credit_details[]
+  ingredients       ingredients[]
+  inventory_details inventory_details[]
+  order_details     order_details[]
+  category          category?           @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1mtsbur82frn64de7balymq9s")
+  supplier          supplier?           @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2kxvbr72tmtscjvyp9yqb12by")
+
+  @@index([category_id], map: "FK1mtsbur82frn64de7balymq9s")
+  @@index([supplier_id], map: "FK2kxvbr72tmtscjvyp9yqb12by")
+}
+
+model roles {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  description  String?   @db.VarChar(255)
+  display_name String?   @db.VarChar(255)
+  name         String?   @db.VarChar(255)
+}
+
+model store {
+  id               BigInt             @id @default(autoincrement())
+  createdBy        String?            @db.VarChar(255)
+  createdDate      DateTime?          @db.DateTime(0)
+  modifiedBy       String?            @db.VarChar(255)
+  modifiedDate     DateTime?          @db.DateTime(0)
+  address          String             @db.VarChar(255)
+  details          String?            @db.VarChar(255)
+  latitude         String?            @db.VarChar(255)
+  logo             String?            @db.VarChar(255)
+  longitude        String?            @db.VarChar(255)
+  name             String             @db.VarChar(255)
+  phone            String?            @db.VarChar(255)
+  email            String?            @db.VarChar(255)
+  store_number     String?            @db.VarChar(255)
+  shippment_days   String?            @db.VarChar(255)
+  credit           credit[]
+  orders           orders[]
+  store_facilities store_facilities[]
+  users            users[]
+}
+
+model store_facilities {
+  store_id    BigInt
+  facility_id BigInt
+  facility    facility @relation(fields: [facility_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK5qrvapq1o49rljlgtdd5ad4vu")
+  store       store    @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK68k4r49dwyi8mbrv6jxboofle")
+
+  @@id([store_id, facility_id])
+  @@index([facility_id], map: "FK5qrvapq1o49rljlgtdd5ad4vu")
+}
+
+model supplier {
+  id           BigInt      @id @default(autoincrement())
+  createdBy    String?     @db.VarChar(255)
+  createdDate  DateTime?   @db.DateTime(0)
+  modifiedBy   String?     @db.VarChar(255)
+  modifiedDate DateTime?   @db.DateTime(0)
+  description  String?     @db.VarChar(255)
+  name         String?     @db.VarChar(255)
+  email        String?     @db.VarChar(255)
+  phoneNo      String?     @db.VarChar(255)
+  active       Int?
+  inventory    inventory[]
+  invoices     invoices[]
+  product      product[]
+}
+
+model user_tokens {
+  id            BigInt    @id @default(autoincrement())
+  createdBy     String?   @db.VarChar(255)
+  createdDate   DateTime? @db.DateTime(0)
+  modifiedBy    String?   @db.VarChar(255)
+  modifiedDate  DateTime? @db.DateTime(0)
+  creation_time DateTime  @db.DateTime(0)
+  passcode      String?   @db.VarChar(255)
+  tokenStatus   Int       @default(0)
+}
+
+model users {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  address      String?   @db.VarChar(255)
+  email        String?   @db.VarChar(255)
+  name         String?   @db.VarChar(255)
+  password     String    @db.VarChar(255)
+  phone        String?   @db.VarChar(255)
+  username     String?   @db.VarChar(255)
+  enabled      Int?
+  ROLE         String?   @default("ROLE_ADMIN") @db.VarChar(255)
+  facility_id  BigInt?
+  store_id     BigInt?
+  userType     Int
+  facility     facility? @relation(fields: [facility_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKf2v6xlminp21tkbw84ib6savb")
+  store        store?    @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKhmd3m5tgfs282j7f6svl8kalp")
+
+  @@index([facility_id], map: "FKf2v6xlminp21tkbw84ib6savb")
+  @@index([store_id], map: "FKhmd3m5tgfs282j7f6svl8kalp")
+}
+
+model zone {
+  id           BigInt    @id @default(autoincrement())
+  createdBy    String?   @db.VarChar(255)
+  createdDate  DateTime? @db.DateTime(0)
+  modifiedBy   String?   @db.VarChar(255)
+  modifiedDate DateTime? @db.DateTime(0)
+  active       Int?
+  details      String    @db.VarChar(255)
+  logo         String    @db.VarChar(255)
+  name         String    @db.VarChar(255)
+  position_id  Int
+  postal_code  String    @db.VarChar(255)
+  radius       String    @db.VarChar(255)
+  text         String    @db.VarChar(255)
+  image_url_1  String    @db.VarChar(255)
+  image_url_2  String    @db.VarChar(255)
+  image_url_3  String    @db.VarChar(255)
+  image_url_4  String    @db.VarChar(255)
+  image_url_5  String    @db.VarChar(255)
+}

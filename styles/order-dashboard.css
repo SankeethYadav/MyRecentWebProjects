@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.order-container {
+  @apply py-4 px-8 flex justify-between items-center m-0;
+}
+
+.menuItem {
+  @apply flex justify-between items-center gap-4 m-0;
+}
+
+.menuItem button {
+  @apply px-3 py-2 bg-blue-600 text-white border border-gray-300 rounded-md hover:bg-blue-800;
+}
+
+.title {
+  @apply text-xl font-bold leading-6 m-0;
+  font-family: 'Manrope'
+}
+
+.subtitle {
+  @apply text-sm font-light m-0;
+  font-family: 'Manrope'
+}
+
+.menuItemText {
+  @apply text-sm font-medium  leading-6 text-white m-0;
+  font-family: 'Manrope'
+}
+
+.grid-col-span-2 {
+  @apply col-span-2;
+}
+
+.grid-row-span-2 {
+  @apply row-span-2;
+}
+
+.grid-layout {
+  @apply grid gap-6 py-4 px-8;
+  grid-template-columns: 1fr 1fr 2fr;
+  grid-template-rows: 1fr 1ffr;
+}
+
+.custom-button {
+  @apply w-40 p-4 bg-gradient-to-r from-purple-700 to-blue-400 rounded-full border border-gray-300 flex justify-center items-center gap-2 text-white;
+}

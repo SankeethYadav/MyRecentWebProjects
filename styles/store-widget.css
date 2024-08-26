@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .frameChild {
+    @apply w-24 h-24 mr-3; /* 12px margin-right is equivalent to 3 in Tailwind spacing scale */
+  }
+
+  .storeName {
+    @apply leading-8; /* 32px line-height */
+  }
+
+  .pinIcon {
+    @apply w-5 h-5; /* 20px width and height */
+  }
+
+  .iconButton {
+    @apply rounded-lg bg-white flex items-center justify-center p-1; /* 4px padding */
+  }
+
+  .location,
+  .personCount {
+    @apply leading-5 font-semibold; /* 20px line-height */
+  }
+
+  .iconButtonParent {
+    @apply flex items-center gap-1; /* 4px gap */
+  }
+
+  .frameParent {
+    @apply flex items-center gap-6 text-base text-black; /* 16px font-size */
+  }
+
+  .storeNameParent {
+    @apply flex flex-col gap-2 ml-0 mr-0; /* 8px gap */
+  }
+
+  .groupParent {
+    @apply inline-flex items-center rounded-2xl bg-white p-3.5 text-xl text-black shadow-md; /* Padding 12px top/bottom and 16px left/right, 20px font-size, custom shadow */
+  }
+}

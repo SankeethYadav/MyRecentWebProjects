@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "es5", 
+      "module": "CommonJS",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist", // Output directory for compiled files
+      "rootDir": "./foodsupply-app", // Root directory of your TypeScript files
+      "moduleResolution": "node",
+      "resolveJsonModule": true
+    },
+    "paths": {
+
+      },
+    "include": [
+      "./foodsupply-app" 
+    ],
+    "exclude": ["node_modules", "**/*.spec.ts"]
+  }
+  

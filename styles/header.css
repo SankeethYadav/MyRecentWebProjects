@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .header-main {
+    @apply flex w-full h-[8.67%] px-8 items-center justify-between bg-white relative ;
+  }
+
+  .header-settings {
+    @apply flex items-center rounded-lg bg-white border-0 shadow-none;
+  }
+
+  .badge {
+    @apply flex text-xs h-5 w-5 text-center justify-center items-center rounded-full bg-[#F7F7F8] text-black ml-2;
+  }
+
+  .icon-container {
+    @apply flex justify-start;
+  }
+
+  .nav-menu {
+    @apply flex justify-between flex-grow gap-10 pl-5;
+  }
+
+  .nav-menu-item {
+    @apply flex items-center ;
+  }
+
+  .nav-menu-item .icon {
+    @apply w-6 h-6 text-red-600;
+  }
+
+  .nav-menu-item .text {
+    @apply text-sm text-[#6C6C89];
+  }
+
+  .nav-menu-link {
+    @apply cursor-pointer flex flex-col items-center no-underline;
+  }
+}

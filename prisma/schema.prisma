@@ -1,0 +1,310 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+  user               User @relation(name: "UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(name: "UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+
+model User {
+  id                  String      @id @default(cuid())
+  orgId               String?
+  org                 Org?        @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name                String?
+  email               String?     @unique     
+  emailVerified       DateTime?
+  image               String?
+  isActive            Boolean     @default(true)
+  accounts            Account[]   @relation("UserAccounts")
+  sessions            Session[]   @relation("UserSessions")
+  ownedOrgs           Org[]       @relation("OwnedOrgs")
+  ownedStores         Store[]     @relation("OwnedStores")
+  placedOrders        Order[]     @relation("PlacedOrders")
+  storeMemberships    StoreMembership[] @relation( "StoreMemberships")
+}
+
+
+model Org {
+  id           String   @id @default(cuid())
+  name         String
+  logoImageUri String?
+  createdDate  DateTime @default(now())
+  lastUpdated  DateTime @updatedAt
+  ownerId      String?
+  owner        User?    @relation("OwnedOrgs", fields: [ownerId], references: [id])
+  stores       Store[]
+  users        User[]
+  suppliers    Supplier[]
+}
+
+model Store {
+  id                     String             @id @default(cuid())
+  orgId                  String
+  org                    Org                @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name                   String
+  address                String?
+  phoneNum               String?
+  webSiteURL             String?
+  ownerId                String
+  owner                  User               @relation("OwnedStores", fields: [ownerId], references: [id])
+  logoImageUri           String?
+  createdDate            DateTime           @default(now())
+  lastUpdated            DateTime           @updatedAt
+  storeType              StoreType          @default(Store)
+  ordersFromStore        Order[]            @relation("FromStore")
+  ordersToStore          Order[]            @relation("ToStore")
+  storeMembers           StoreMembership[]
+  pendingMembers         PendingStoreMembership[]
+  productCategories      Category[]
+  productGroupCategories ProductGroupCategory[]
+  products               Product[]
+  connectedToStoreId     String? 
+  connectedToStore       Store?              @relation( "DefaultConnectedStore", fields: [connectedToStoreId], references: [id])
+  connectedStores        Store[]             @relation("DefaultConnectedStore")
+  inventoryItems         InventoryItems[]
+}
+
+model StoreMembership {
+  storeId     String
+  store       Store       @relation(fields: [storeId], references: [id])
+  userId      String   
+  user        User        @relation( "StoreMemberships", fields: [userId], references: [id])
+  role        UserRole    @default(Member)
+  createdDate DateTime    @default(now())
+  lastUpdated DateTime    @updatedAt
+
+  @@id([storeId, userId])
+}
+
+model PendingStoreMembership {
+  storeId     String
+  store       Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  role        UserRole   @default(Member)
+  emailId     String
+  phoneNum    String?
+  name        String?
+  createdDate DateTime   @default(now())
+  lastUpdated DateTime   @updatedAt
+  @@id([storeId, emailId])
+}
+
+model Order {
+  id                   String      @id @default(cuid())
+  fromStoreId          String
+  toStoreId            String
+  fromStore            Store       @relation(name: "FromStore", fields: [fromStoreId], references: [id], onDelete: Cascade)
+  toStore              Store       @relation(name: "ToStore", fields: [toStoreId], references: [id], onDelete: Cascade)
+  orderDate            DateTime    @default(now())
+  state                OrderState  @default(OrderDraft)
+  orderedByUserId      String
+  orderedByUser        User        @relation(name: "PlacedOrders", fields: [orderedByUserId], references: [id])
+  totalCost            Float?
+  orderItems           OrderItem[]
+  lastUpdated          DateTime    @updatedAt
+  createdDate          DateTime?   @default(now())
+  expectedDeliveryDate DateTime? 
+  reasonForLastUpdate  String?
+  estimatedBudget      Float?
+  inventoryId          String?
+  inventory            Inventory? @relation(fields: [inventoryId], references: [id])
+}
+
+model OrderItem {
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Float?
+  cost      Float?
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@id([orderId, productId])
+}
+
+model Category {
+  storeId       String
+  store         Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name          String
+  createdDate   DateTime? @default(now())
+  lastUpdated   DateTime? @updatedAt
+  products      Product[]
+  @@id([storeId, name])
+}
+
+model Product {
+  id                String      @id @default(cuid())
+  altId             String?
+  name              String
+  description       String?
+  imageUri          String?
+  sku               String?
+  createdDate       DateTime?   @default(now())
+  lastUpdated       DateTime?   @updatedAt
+  altSku            String?
+  brand             String?
+  height            String?
+  length            String?
+  weight            String?
+  width             String?
+  unitOfMeasure     String? 
+  originalCost      Float?
+  shippingCost      Float?       @default(0)
+  cost              Float?
+  markup            Float?       @default(0)
+  totalCost         Float?
+  visibleUntil      DateTime?
+  typicalExpiryInDays     Float?
+  categoryName      String?
+  category          Category?    @relation(fields: [storeId, categoryName], references: [storeId, name])
+  storeId           String
+  store             Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  supplierId        String?
+  supplier          Supplier?    @relation(fields: [supplierId], references: [id])
+  orderItems        OrderItem[]
+  productGroupItems ProductGroupItem[]
+  inventoryItems    InventoryItems[]
+}
+
+model ProductGroupCategory {
+  storeId           String
+  store             Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name              String
+  createdDate       DateTime? @default(now())
+  lastUpdated       DateTime? @updatedAt
+  productGroups     ProductGroup[]
+  @@id([storeId, name])
+}
+
+model ProductGroup {
+  id                  String    @id @default(cuid())
+  storeId             String
+  categoryName        String?
+  category            ProductGroupCategory?    @relation(fields: [storeId, categoryName], references: [storeId, name])
+  productGroupItems   ProductGroupItem[]
+  totalCost           Float?
+  retailPrice         Float?
+  name                String
+  description         String?
+  visibleUntil        DateTime?
+  unitOfMeasure       String?
+  typicalExpiryInDays Float?
+}
+
+model ProductGroupItem {
+  productGroupId   String
+  productGroup     ProductGroup   @relation(fields: [productGroupId], references: [id], onDelete: Cascade)
+  productId        String
+  quantity         Float?
+  cost             Float?
+  size             String?
+  product          Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@id([productGroupId, productId])
+}
+
+model Supplier {
+  id          String    @id @default(cuid())
+  orgId       String
+  org         Org @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name        String
+  phoneNum    String?
+  address     String?
+  webSiteURL  String?
+  createdDate DateTime? @default(now())
+  lastUpdated DateTime? @updatedAt
+  email       String?
+  active      Int?
+  products    Product[]
+}
+
+
+model Inventory {
+  id                String @id @default(cuid())
+  inventoryItems    InventoryItems[]
+  lastUpdatedDate   DateTime? @updatedAt
+  ordersReceived    Order[]
+}
+
+
+model InventoryItems {
+    inventoryId      String
+    inventory        Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+    storeId          String
+    store            Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+    productId        String
+    product          Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    receivedDate     DateTime
+    originalCost     Float?
+    shippingCost     Float?
+    totalCost        Float?
+    markup           Float?
+    expiryDate       DateTime?
+    lastUpdatedDate  DateTime?
+    onHandQty        Float?
+    @@id([inventoryId, storeId, productId, receivedDate])
+}
+
+enum OrderState {
+  OrderDraft
+  OrderProcessing
+  OrderReturned
+  OrderProblem
+  OrderInTransit
+  OrderDelivered
+  OrderCancelled
+  OrderPaymentDue
+  OrderPickupAvailable
+}
+
+enum UserRole {
+  Owner
+  Admin
+  Member
+}
+
+enum InviteType {
+  Email
+  SMS
+  Code
+}
+
+enum StoreType {
+  Store
+  Facility
+  Supplier
+}

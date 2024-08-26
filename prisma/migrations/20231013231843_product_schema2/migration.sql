@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Supplier` MODIFY `createdDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    MODIFY `lastUpdated` DATETIME(3) NULL;
